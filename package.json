@@ -1,0 +1,21 @@
+{
+  "name": "pagespace-webcopy",
+  "version": "1.0.0",
+  "description": "Web copy part for Pagespace",
+  "main": "index.js",
+  "scripts": {
+    "start": "node standalone",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Phil Mander",
+  "license": "LGPL",
+  "devDependencies": {
+    "body-parser": "^1.13.3",
+    "express": "^4.13.3",
+    "express-handlebars": "^2.0.1",
+    "serve-favicon": "^2.3.0"
+  },
+  "peerDependencies": {
+    "pagespace": "4.13.x"
+  }
+}
