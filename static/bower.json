@@ -17,6 +17,7 @@
     "wysihtml": "~0.4.17",
     "angular": "~1.4.5",
     "angular-sanitize": "~1.4.5",
-    "localforage": "~1.2.10"
+    "localforage": "~1.2.10",
+    "bootstrap": "~3.3.5"
   }
 }
