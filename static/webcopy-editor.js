@@ -9,8 +9,8 @@
             link: function (scope, element, attrs, controller) {
 
                 localforage.getItem(STORAGE_KEY).then(function(htmlDraft) {
-                    return htmlDraft ? new Promise(function(resovle) {
-                        resovle({
+                    return htmlDraft ? new Promise(function(resolve) {
+                        resolve({
                             html: htmlDraft
                         });
                     }) : pagespace.getData();

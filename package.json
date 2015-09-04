@@ -16,6 +16,6 @@
     "serve-favicon": "^2.3.0"
   },
   "peerDependencies": {
-    "pagespace": "4.13.x"
+    "pagespace": "0.x"
   }
 }
