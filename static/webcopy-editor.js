@@ -79,7 +79,7 @@
         $scope.save = function() {
             var htmlVal = $scope.webcopy;
             return pagespace.setData({
-                wrapperClass: $scope.wrapperClass || '',
+                wrapperClass: $scope.data.wrapperClass || '',
                 html: htmlVal
             }).then(function() {
                 //remove draft
