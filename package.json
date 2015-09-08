@@ -1,7 +1,11 @@
 {
   "name": "pagespace-webcopy",
   "version": "1.0.0",
-  "description": "Web copy part for Pagespace",
+  "description": "Web copy plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pagespace/pagespace-webcopy"
+  },
   "main": "index.js",
   "scripts": {
     "start": "node standalone",
@@ -16,6 +20,6 @@
     "serve-favicon": "^2.3.0"
   },
   "peerDependencies": {
-    "pagespace": "0.x"
+    "pagespace": "0.1.x"
   }
 }
