@@ -8,16 +8,23 @@
             restrict: 'A',
             link: function (scope, element, attrs, controller) {
 
-                localforage.getItem(STORAGE_KEY).then(function(htmlDraft) {
-                    return htmlDraft ? new Promise(function(resolve) {
-                        resolve({
-                            html: htmlDraft
-                        });
-                    }) : pagespace.getData();
-                }).then(function(data) {
-                    scope.data = data;
-                    scope.$apply();
-                    setupEditor();
+                localforage.getItem(STORAGE_KEY).then(function(cachedHtml) {
+                    pagespace.getData().then(function(data) {
+                        if(cachedHtml) {
+                            data.html = cachedHtml;
+                        }
+                        if(data.cssHref) {
+                            var injectLink = document.createElement('link');
+                            injectLink.setAttribute('type', 'text/css');
+                            injectLink.setAttribute('rel', 'stylesheet');
+                            injectLink.setAttribute('href', data.cssHref);
+                            var head = document.getElementsByTagName("head")[0];
+                            head.appendChild(injectLink);
+                        }
+                        scope.data = data;
+                        scope.$apply();
+                        setupEditor();
+                    });
                 });
 
                 function setupEditor() {
@@ -80,6 +87,7 @@
             var htmlVal = $scope.webcopy;
             return pagespace.setData({
                 wrapperClass: $scope.data.wrapperClass || '',
+                cssHref: $scope.data.cssHref,
                 html: htmlVal
             }).then(function() {
                 //remove draft

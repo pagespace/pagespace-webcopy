@@ -75,6 +75,7 @@ body {
 }
 .wysihtml-editor .editor {
     min-height: 1em;
+    padding: 20px;
 }
 .wysihtml-editor .source textarea {
     width: 100%;
