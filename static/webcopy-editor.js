@@ -6,7 +6,7 @@
 
         return {
             restrict: 'A',
-            link: function (scope, element, attrs, controller) {
+            link: function (scope, element) {
 
                 localforage.getItem(STORAGE_KEY).then(function(cachedHtml) {
                     pagespace.getData().then(function(data) {
@@ -42,6 +42,23 @@
                         useLineBreaks:  false
                     });
                     scope.webcopy = editor.getValue();
+
+                    scope.insertImage = function(image) {
+                        var imageData = {
+                            src: image.src,
+                            alt: image.name || ""
+                        };
+                        if(image.width) {
+                            imageData.width = image.width;
+                        }
+                        if(image.height) {
+                            imageData.height = image.height;
+                        }
+
+                        editor.composer.commands.exec("insertImage", imageData);
+                        scope.insertImageDialog = false;
+                        scope.selectedImage = {};
+                    };
 
                     element[0].querySelector('[data-behavior=showSource]').addEventListener('click', function(e) {
                         e.preventDefault();
@@ -79,7 +96,37 @@
             }
         }
     })
-    .controller('WebCopyController' , function($scope, $http) {
+    .directive('psImageDialog', function() {
+        return {
+            restrict: 'A',
+            controller: function($scope, $http) {
+                $http.get('/_api/media?type=' + encodeURIComponent('/^image/')).success(function(images) {
+                    images = images.map(function(image) {
+                        image.src = '/_media/' + image.fileName;
+                        return image;
+                    });
+                    $scope.availableImages = images;
+                });
+
+                $scope.selectedImage = {};
+                $scope.selectImage = function(image) {
+                    $scope.selectedImage = image;
+                };
+
+                $scope.hideInsertImage = function() {
+                    $scope.selectedImage = {};
+                    $scope.insertImageDialog = false;
+                }
+            }
+        }
+    })
+    .controller('WebCopyController' , function($scope) {
+
+        //image dialog stuff
+        $scope.insertImageDialog = false;
+        $scope.showInsertImage = function() {
+            $scope.insertImageDialog = true;
+        };
 
         $scope.changed = false;
 

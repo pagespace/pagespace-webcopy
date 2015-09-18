@@ -16,7 +16,7 @@ app.set('views', './');
 app.engine('hbs', exphbs());
 app.set('view engine', 'hbs');
 
-app.use('/_parts/static/pagespace-webcopy/', express.static('static'));
+app.use('/_plugins/static/pagespace-webcopy/', express.static('static'));
 app.use(bodyParser.json());
 
 app.get('/', function (req, res) {

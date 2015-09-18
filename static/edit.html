@@ -4,14 +4,6 @@
     <title>Web Copy Editor</title>
     <link href="/_plugins/static/pagespace-webcopy/bower_components/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet">
     <link href="/_plugins/static/pagespace-webcopy/webcopy-editor.css" type="text/css" rel="stylesheet">
-
-    <script src="/_plugins/static/pagespace-webcopy/pagespace-stub.js"></script>
-    <script src="/_plugins/static/pagespace-webcopy/bower_components/localforage/dist/localforage.min.js"></script>
-    <script src="/_plugins/static/pagespace-webcopy/bower_components/angular/angular.min.js"></script>
-    <script src="/_plugins/static/pagespace-webcopy/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="/_plugins/static/pagespace-webcopy/bower_components/wysihtml/dist/wysihtml5x-toolbar.min.js"></script>
-    <script src="/_plugins/static/pagespace-webcopy/parser-rules.js"></script>
-    <script src="/_plugins/static/pagespace-webcopy/webcopy-editor.js"></script>
 </head>
 <body ng-controller="WebCopyController">
 <div class="ps-edit-box">
@@ -39,7 +31,10 @@
                 <button data-wysihtml5-command="createLink" title="Insert a link" class="command" >
                     <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-link"></use></svg>
                 </button>
-                <button data-wysihtml5-command="insertImage" title="Insert an image" class="command" >
+                <!--<button data-wysihtml5-command="insertImage" title="Insert an image" class="command" >
+                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
+                </button>-->
+                <button title="Insert an image" class="command" ng-click="showInsertImage()">
                     <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
                 </button>
                 <button data-wysihtml5-command="justifyLeft" title="Align left" class="command" >
@@ -80,12 +75,48 @@
                             <option value="wysiwyg-float-right">right</option>
                         </select>
                     </label>
-                    <a data-wysihtml5-dialog-action="save" style="cursor: pointer">OK</a>&nbsp;
-                    <a data-wysihtml5-dialog-action="cancel" style="cursor: pointer">Cancel</a>
+                    <button type="button"  data-wysihtml5-dialog-action="save">OK</button>&nbsp;
+                    <button type="button"  data-wysihtml5-dialog-action="cancel">Cancel</button>
                 </div>
             </div>
         </div>
+        <div ps-image-dialog class="insert-image modal" ng-show="insertImageDialog">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Insert Image</h3>
+                </div>
 
+                <div class="panel-body">
+                    <div class="list-group">
+                        <a href="#" ng-repeat="image in availableImages" class="list-group-item" ng-click="selectImage(image)">
+                            <div class="image-holder">
+                                <img ng-src="{{image.src}}">
+                            </div>
+                            <h4 class="list-group-item-heading">{{image.name}}</h4>
+                            <div class="clearfix"></div>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input type="text" ng-model="selectedImage.src" class="form-control" placeholder="Image url" style="width: 300px">
+                        </div>
+                        <div class="form-group">
+                            <label>Width</label>
+                            <input type="number" ng-model="selectedImage.width" class="form-control" placeholder="Width" style="width: 100px">
+                        </div>
+                        <div class="form-group">
+                            <label>Height</label>
+                            <input type="number" ng-model="selectedImage.height" class="form-control" placeholder="Height" style="width: 100px">
+                        </div>
+                        <button type="button" class="btn btn-default" ng-click="hideInsertImage()">Cancel</button>
+                        <button type="button" class="btn btn-primary" ng-disabled="selectedImage == null" ng-click="insertImage(selectedImage)">Insert</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
         <div class="editor webcopy" ng-bind-html="data.html"></div>
         <div class="source hidden">
             <textarea name="editor-source" rows="10"></textarea>
@@ -94,9 +125,14 @@
     <footer class="footer">
         <button type="button" class="btn btn-primary" ng-click="save()">Save and close</button>
     </footer>
-
-
 </div>
+<script src="/_plugins/static/pagespace-webcopy/pagespace-stub.js"></script>
+<script src="/_plugins/static/pagespace-webcopy/bower_components/localforage/dist/localforage.min.js"></script>
+<script src="/_plugins/static/pagespace-webcopy/bower_components/angular/angular.min.js"></script>
+<script src="/_plugins/static/pagespace-webcopy/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+<script src="/_plugins/static/pagespace-webcopy/bower_components/wysihtml/dist/wysihtml5x-toolbar.min.js"></script>
+<script src="/_plugins/static/pagespace-webcopy/parser-rules.js"></script>
+<script src="/_plugins/static/pagespace-webcopy/webcopy-editor.js"></script>
 </body>
 
 </html>
