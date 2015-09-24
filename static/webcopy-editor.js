@@ -41,12 +41,15 @@
                         cleanUp: false,
                         useLineBreaks:  false
                     });
-                    scope.webcopy = editor.getValue();
+                    var currentRange = null;
+
+                    scope.webcopy = editor.getValue(false);
 
                     scope.insertImage = function(image) {
                         var imageData = {
                             src: image.src,
-                            alt: image.name || ""
+                            alt: image.name || '',
+                            className: image.align || ''
                         };
                         if(image.width) {
                             imageData.width = image.width;
@@ -54,10 +57,30 @@
                         if(image.height) {
                             imageData.height = image.height;
                         }
-
-                        editor.composer.commands.exec("insertImage", imageData);
+                        editor.focus();
+                        if(currentRange) {
+                            editor.composer.selection.setSelection(currentRange);
+                        }
+                        editor.composer.commands.exec('insertImage', imageData);
                         scope.insertImageDialog = false;
                         scope.selectedImage = {};
+                    };
+
+                    scope.createLink = function(page) {
+                        var linkData = {
+                            href: page.url,
+                            target: page.linkTarget || '',
+                            title: page.name
+                        };
+
+                        editor.focus();
+                        if(currentRange) {
+                            editor.composer.selection.setSelection(currentRange);
+                        }
+
+                        editor.composer.commands.exec('createLink', linkData);
+                        scope.createLinkDialog = false;
+                        scope.selectedPage = {};
                     };
 
                     element[0].querySelector('[data-behavior=showSource]').addEventListener('click', function(e) {
@@ -67,7 +90,7 @@
                         var html;
                         if(angular.element(sourceEl).hasClass('hidden')) {
                             //show textarea
-                            html = editor.getValue();
+                            html = editor.getValue(false);
                             angular.element(textarea).val(html);
                         } else {
                             // show editor
@@ -86,7 +109,9 @@
                      angular.element(toolbarEl).addClass('hidden');
                      });*/
                     editor.on("interaction", function() {
-                        scope.webcopy = editor.getValue();
+                        currentRange = editor.composer.selection.getRange();
+                        console.log(currentRange);
+                        scope.webcopy = editor.getValue(false);
                         scope.changed = true;
                     });
                     editor.on("aftercommand", function() {
@@ -120,12 +145,38 @@
             }
         }
     })
+    .directive('psLinkDialog', function() {
+        return {
+            restrict: 'A',
+            controller: function($scope, $http) {
+                $http.get('/_api/pages?status=' + encodeURIComponent('200')).success(function(pages) {
+                    $scope.availablePages = pages;
+                });
+
+                $scope.selectedPage = {};
+                $scope.selectPage = function(page) {
+                    $scope.selectedPage = page;
+                };
+
+                $scope.hideCreateLink= function() {
+                    $scope.selectedPage = {};
+                    $scope.createLinkDialog = false;
+                }
+            }
+        }
+    })
     .controller('WebCopyController' , function($scope) {
 
         //image dialog stuff
         $scope.insertImageDialog = false;
         $scope.showInsertImage = function() {
             $scope.insertImageDialog = true;
+        };
+
+        //link dialog stuff
+        $scope.createLinkDialog = false;
+        $scope.showCreateLink = function() {
+            $scope.createLinkDialog = true;
         };
 
         $scope.changed = false;

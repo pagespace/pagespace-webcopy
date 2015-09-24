@@ -104,9 +104,27 @@ body {
 .wysiwyg-text-align-justify {
     text-align: justify;
 }
+.wysiwyg-align-top {
+    vertical-align: top;
+}
+.wysiwyg-align-middle {
+    vertical-align: middle;
+}
+.wysiwyg-align-bottom {
+    vertical-align: bottom;
+}
+.wysiwyg-float-right {
+    float: right;
+    margin-left: 10px;
+}
+.wysiwyg-float-left {
+    float: left;
+    margin-right: 10px;
+}
 
 /* insert image dialog */
-.insert-image.modal {
+.insert-image.modal,
+.create-link.modal {
     display: block;
     overflow: auto;
 }

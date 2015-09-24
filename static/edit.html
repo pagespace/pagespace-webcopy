@@ -28,12 +28,9 @@
                 <button data-wysihtml5-command="insertOrderedList" title="Insert an ordered list" class="command" >
                     <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-list-numbered"></use></svg>
                 </button>
-                <button data-wysihtml5-command="createLink" title="Insert a link" class="command" >
+                <button title="Create a link" class="command" ng-click="showCreateLink()">
                     <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-link"></use></svg>
                 </button>
-                <!--<button data-wysihtml5-command="insertImage" title="Insert an image" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
-                </button>-->
                 <button title="Insert an image" class="command" ng-click="showInsertImage()">
                     <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
                 </button>
@@ -83,7 +80,7 @@
         <div ps-image-dialog class="insert-image modal" ng-show="insertImageDialog">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Insert Image</h3>
+                    <h3 class="panel-title">Select an image to insert</h3>
                 </div>
 
                 <div class="panel-body">
@@ -99,10 +96,10 @@
                 </div>
                 <div class="panel-footer">
                     <form class="form-inline">
-                        <div class="form-group">
+                        <div class="form-group" style="margin-right: 10px">
                             <input type="text" ng-model="selectedImage.src" class="form-control" placeholder="Image url" style="width: 300px">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-right: 10px">
                             <label>Width</label>
                             <input type="number" ng-model="selectedImage.width" class="form-control" placeholder="Width" style="width: 100px">
                         </div>
@@ -110,8 +107,55 @@
                             <label>Height</label>
                             <input type="number" ng-model="selectedImage.height" class="form-control" placeholder="Height" style="width: 100px">
                         </div>
-                        <button type="button" class="btn btn-default" ng-click="hideInsertImage()">Cancel</button>
-                        <button type="button" class="btn btn-primary" ng-disabled="selectedImage == null" ng-click="insertImage(selectedImage)">Insert</button>
+                        <div class="form-group">
+                            <label>Align</label>
+                            <select ng-model="selectedImage.align" class="form-control" style="width: 100px">
+                                <option value="" selected>default</option>
+                                <option value="wysiwyg-float-left">left</option>
+                                <option value="wysiwyg-float-right">right</option>
+                                <option value="wysiwyg-align-top">top</option>
+                                <option value="wysiwyg-align-middle">middle</option>
+                                <option value="wysiwyg-align-bottom">bottom</option>
+                            </select>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default" ng-click="hideInsertImage()">Cancel</button>
+                            <button type="button" class="btn btn-primary" ng-disabled="selectedImage == null" ng-click="insertImage(selectedImage)">Insert</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <div ps-link-dialog class="create-link modal" ng-show="createLinkDialog">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Select a page to link to</h3>
+                </div>
+
+                <div class="panel-body">
+                    <div class="list-group">
+                        <a href="#" ng-repeat="page in availablePages" class="list-group-item" ng-click="selectPage(page)">
+                            <h4 class="list-group-item-heading">{{page.name}} <small>{{page.url}}</small></h4>
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <form class="form-inline">
+                        <div class="form-group" style="margin-right: 10px">
+                            <input type="text" ng-model="selectedPage.url" class="form-control" placeholder="Url" style="width: 300px">
+                        </div>
+                        <div class="form-group">
+                            <label>Open in</label>
+                            <select ng-model="selectedPage.linkTarget" class="form-control" style="width: 100px">
+                                <option value="">Same window</option>
+                                <option value="_blank">New window</option>
+                            </select>
+                        </div>
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-default" ng-click="hideCreateLink()">Cancel</button>
+                            <button type="button" class="btn btn-primary" ng-disabled="selectedPage == null" ng-click="createLink(selectedPage)">Create</button>
+                        </div>
                     </form>
 
                 </div>
