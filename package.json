@@ -19,9 +19,6 @@
     "express-handlebars": "^2.0.1",
     "serve-favicon": "^2.3.0"
   },
-  "peerDependencies": {
-    "pagespace": "0.1.x"
-  },
   "pagespace" : {
      "name" : "Web Copy",
      "defaultData": {
