@@ -1,5 +1,6 @@
 (function() {
-    var STORAGE_KEY = 'pagespace-webcopy-html';
+
+    var storageKey = null;
 
     angular.module('webCopyApp', [ 'ngSanitize' ])
     .directive('psWysihtml', function () {
@@ -8,11 +9,11 @@
             restrict: 'A',
             link: function (scope, element) {
 
-                localforage.getItem(STORAGE_KEY).then(function(cachedHtml) {
+                localforage.getItem(storageKey).then(function(cachedHtml) {
                     pagespace.getData().then(function(data) {
-                        if(cachedHtml) {
+/*                        if(cachedHtml) {
                             data.html = cachedHtml;
-                        }
+                        }*/
                         if(data.cssHref) {
                             var injectLink = document.createElement('link');
                             injectLink.setAttribute('type', 'text/css');
@@ -21,16 +22,35 @@
                             var head = document.getElementsByTagName("head")[0];
                             head.appendChild(injectLink);
                         }
+                        console.log(data)
                         scope.data = data;
                         scope.$apply();
-                        setupEditor();
+                        setupEditor(data.html);
                     });
                 });
 
-                function setupEditor() {
-                    var editorEl = element[0].querySelector('.editor');
-                    var sourceEl = element[0].querySelector('.source');
-                    var toolbarEl = element[0].querySelector('.toolbar');
+                function setupEditor(initHtml) {
+
+                    var rootEl = element[0];
+                    var editorEl = rootEl.querySelector('.editor');
+                    var sourceEl = rootEl.querySelector('.source');
+                    var toolbarEl = rootEl.querySelector('.toolbar');
+
+                    var openImageSelector = rootEl.querySelector('.btn-img-select');
+                    openImageSelector.addEventListener('click', function() {
+                        angular.element(toolbarEl).toggleClass('full');
+                    });
+                    var openLinkSelector = rootEl.querySelector('.btn-link-select');
+                    openLinkSelector.addEventListener('click', function() {
+                        angular.element(toolbarEl).toggleClass('full');
+                    });
+
+                    toolbarEl.querySelector('[data-wysihtml5-command="insertImage"]').addEventListener('click', function() {
+                        toolbarEl.querySelector('[data-wysihtml5-dialog="createLink"]').style.display = 'none';
+                    });
+                    toolbarEl.querySelector('[data-wysihtml5-command="createLink"]').addEventListener('click', function() {
+                        toolbarEl.querySelector('[data-wysihtml5-dialog="insertImage"]').style.display = 'none';
+                    });
 
                     angular.element(sourceEl).addClass('hidden');
 
@@ -38,52 +58,14 @@
                         toolbar: toolbarEl,
                         showToolbarAfterInit: false,
                         parserRules:  wysihtml5ParserRules,
-                        cleanUp: false,
+                        cleanUp: true,
                         useLineBreaks:  false
                     });
-                    var currentRange = null;
 
-                    scope.webcopy = editor.getValue(false);
+                    editor.setValue(initHtml);
+                    //scope.webcopy = editor.getValue();
 
-                    scope.insertImage = function(image) {
-                        var imageData = {
-                            src: image.src,
-                            alt: image.name || '',
-                            className: image.align || ''
-                        };
-                        if(image.width) {
-                            imageData.width = image.width;
-                        }
-                        if(image.height) {
-                            imageData.height = image.height;
-                        }
-                        editor.focus();
-                        if(currentRange) {
-                            editor.composer.selection.setSelection(currentRange);
-                        }
-                        editor.composer.commands.exec('insertImage', imageData);
-                        scope.insertImageDialog = false;
-                        scope.selectedImage = {};
-                    };
-
-                    scope.createLink = function(page) {
-                        var linkData = {
-                            href: page.url,
-                            target: page.linkTarget || '',
-                            title: page.name
-                        };
-
-                        editor.focus();
-                        if(currentRange) {
-                            editor.composer.selection.setSelection(currentRange);
-                        }
-
-                        editor.composer.commands.exec('createLink', linkData);
-                        scope.createLinkDialog = false;
-                        scope.selectedPage = {};
-                    };
-
-                    element[0].querySelector('[data-behavior=showSource]').addEventListener('click', function(e) {
+                    rootEl.querySelector('[data-behavior=showSource]').addEventListener('click', function(e) {
                         e.preventDefault();
                         e.stopPropagation();
                         var textarea = sourceEl.getElementsByTagName('textarea')[0];
@@ -109,14 +91,19 @@
                      angular.element(toolbarEl).addClass('hidden');
                      });*/
                     editor.on("interaction", function() {
-                        currentRange = editor.composer.selection.getRange();
-                        console.log(currentRange);
                         scope.webcopy = editor.getValue(false);
                         scope.changed = true;
                     });
                     editor.on("aftercommand", function() {
                         scope.changed = true;
                     });
+                    editor.on("cancel:dialog", function() {
+                        angular.element(toolbarEl).removeClass('full');
+                    });
+                    editor.on("save:dialog", function() {
+                        angular.element(toolbarEl).removeClass('full');
+                    });
+
                 }
             }
         }
@@ -133,15 +120,13 @@
                     $scope.availableImages = images;
                 });
 
-                $scope.selectedImage = {};
                 $scope.selectImage = function(image) {
-                    $scope.selectedImage = image;
+                    console.log(image);
+                    document.querySelector('[data-wysihtml5-dialog-field="src"]').value = '/_media/' + image.fileName;
+                    document.querySelector('[data-wysihtml5-dialog-field="width"]').value = image.width;
+                    document.querySelector('[data-wysihtml5-dialog-field="height"]').value = image.height;
+                    document.querySelector('[data-wysihtml5-dialog-field="alt"]').value = image.name;
                 };
-
-                $scope.hideInsertImage = function() {
-                    $scope.selectedImage = {};
-                    $scope.insertImageDialog = false;
-                }
             }
         }
     })
@@ -153,33 +138,18 @@
                     $scope.availablePages = pages;
                 });
 
-                $scope.selectedPage = {};
-                $scope.selectPage = function(page) {
-                    $scope.selectedPage = page;
-                };
-
-                $scope.hideCreateLink= function() {
-                    $scope.selectedPage = {};
-                    $scope.createLinkDialog = false;
-                }
+               $scope.selectPage = function(page) {
+                    document.querySelector('[data-wysihtml5-dialog-field="href"]').value = page.url;
+               };
             }
         }
     })
     .controller('WebCopyController' , function($scope) {
 
-        //image dialog stuff
-        $scope.insertImageDialog = false;
-        $scope.showInsertImage = function() {
-            $scope.insertImageDialog = true;
-        };
-
-        //link dialog stuff
-        $scope.createLinkDialog = false;
-        $scope.showCreateLink = function() {
-            $scope.createLinkDialog = true;
-        };
+        storageKey = pagespace.getKey();
 
         $scope.changed = false;
+        $scope.lastSaveTime = Date.now();
 
         $scope.save = function() {
             var htmlVal = $scope.webcopy;
@@ -189,32 +159,34 @@
                 html: htmlVal
             }).then(function() {
                 //remove draft
-                return localforage.removeItem(STORAGE_KEY);
+                return localforage.removeItem(storageKey);
             }).then(function() {
                 pagespace.close();
             });
         };
 
         $scope.saveDraft = function() {
-            var htmlVal = $scope.webcopy;
-            return localforage.setItem(STORAGE_KEY, htmlVal);
+             var htmlVal = $scope.webcopy;
+             return localforage.setItem(storageKey, htmlVal);
         };
 
-         function saveOnChange() {
-             setTimeout(function() {
-                 if($scope.changed) {
-                     $scope.saveDraft().then(function() {
-                         console.info('Draft saved');
-                         $scope.changed = false;
-                         saveOnChange();
-                     }).catch(function(err) {
+        function saveOnChange() {
+            setTimeout(function() {
+                if($scope.changed) {
+                    $scope.saveDraft().then(function() {
+                        console.info('Draft saved');
+                        $scope.lastSaveTime = Date.now();
+                        $scope.changed = false;
+                        saveOnChange();
+                        $scope.$apply();
+                    }).catch(function(err) {
                          console.error(err, 'Error saving draft');
-                     });
-                 } else {
-                     saveOnChange();
-                 }
+                    });
+                } else {
+                    saveOnChange();
+                }
              }, 500);
-         }
-         saveOnChange();
+        }
+        saveOnChange();
     });
 })();

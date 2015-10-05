@@ -9,166 +9,143 @@
 <div class="ps-edit-box">
     <div ps-wysihtml class="wysihtml-editor">
         <div class="toolbar" class="hidden">
-            <div class="toolbar-buttons">
-                <button data-wysihtml5-command="undo" title="Undo" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-undo"></use></svg>
-                </button>
-                <button data-wysihtml5-command="redo" title="Redo" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-redo"></use></svg>
-                </button>
-                <button data-wysihtml5-command="bold" title="Make text bold (CTRL + B)" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-bold"></use></svg>
-                </button>
-                <button data-wysihtml5-command="italic" title="Make text italic (CTRL + I)" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-italic"></use></svg>
-                </button>
-                <button data-wysihtml5-command="insertUnorderedList" title="Insert an unordered list" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-list"></use></svg>
-                </button>
-                <button data-wysihtml5-command="insertOrderedList" title="Insert an ordered list" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-list-numbered"></use></svg>
-                </button>
-                <button title="Create a link" class="command" ng-click="showCreateLink()">
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-link"></use></svg>
-                </button>
-                <button title="Insert an image" class="command" ng-click="showInsertImage()">
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
-                </button>
-                <button data-wysihtml5-command="justifyLeft" title="Align left" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-left"></use></svg>
-                </button>
-                <button data-wysihtml5-command="justifyCenter" title="Align center" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-center"></use></svg>
-                </button>
-                <button data-wysihtml5-command="justifyRight" title="Align right" class="command" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-right"></use></svg>
-                </button>
 
-                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" title="Insert headline 1" class="command" >h1</button>
-                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" title="Insert headline 2" class="command" >h2</button>
-                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" title="Insert headline 3" class="command" >h3</button>
-                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" title="Insert paragraph" class="command" >p</button>
-                <button data-wysihtml5-command="insertSpeech" title="Insert speech" class="command"  style="display: none;"></button>
-                <button data-behavior="showSource" title="Show HTML" class="action" >
-                    <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-embed2"></use></svg>
-                </button>
-
-                <div data-wysihtml5-dialog="createLink" style="display: none;">
-                    <label>
-                        Link:
-                        <input data-wysihtml5-dialog-field="href" value="">
-                    </label>
-                    <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a data-wysihtml5-dialog-action="cancel">Cancel</a>
-                </div>
-                <div data-wysihtml5-dialog="insertImage" style="display: none;">
-                    <label>
-                        Image:
-                        <input data-wysihtml5-dialog-field="src" value="">
-                    </label>
-                    <label>Align:
-                        <select data-wysihtml5-dialog-field="className">
-                            <option value="">default</option>
-                            <option value="wysiwyg-float-left">left</option>
-                            <option value="wysiwyg-float-right">right</option>
-                        </select>
-                    </label>
-                    <button type="button"  data-wysihtml5-dialog-action="save">OK</button>&nbsp;
-                    <button type="button"  data-wysihtml5-dialog-action="cancel">Cancel</button>
-                </div>
+            <div class="pull-right">
+                <button type="button" class="btn btn-primary" ng-click="save()">Save and close</button>
             </div>
-        </div>
-        <div ps-image-dialog class="insert-image modal" ng-show="insertImageDialog">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Select an image to insert</h3>
-                </div>
+            <div class="pull-right" style="clear: right; margin-top: 10px"><p>Draft saved at {{lastSaveTime | date:'HH:mm:ss'}}</p></div>
 
-                <div class="panel-body">
-                    <div class="list-group">
-                        <a href="#" ng-repeat="image in availableImages" class="list-group-item" ng-click="selectImage(image)">
-                            <div class="image-holder">
-                                <img ng-src="{{image.src}}">
+            <div>
+                <div class="toolbar-buttons">
+                    <button data-wysihtml5-command="undo" title="Undo" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-undo"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="redo" title="Redo" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-redo"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="bold" title="Make text bold (CTRL + B)" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-bold"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="italic" title="Make text italic (CTRL + I)" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-italic"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="insertUnorderedList" title="Insert an unordered list" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-list"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="insertOrderedList" title="Insert an ordered list" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-list-numbered"></use></svg>
+                    </button>
+                    <button title="Create a link" class="command" data-wysihtml5-command="createLink">
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-link"></use></svg>
+                    </button>
+                    <button title="Insert an image" class="command" data-wysihtml5-command="insertImage">
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="justifyLeft" title="Align left" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-left"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="justifyCenter" title="Align center" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-center"></use></svg>
+                    </button>
+                    <button data-wysihtml5-command="justifyRight" title="Align right" class="command" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-right"></use></svg>
+                    </button>
+
+                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" title="Insert headline 1" class="command" >h1</button>
+                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" title="Insert headline 2" class="command" >h2</button>
+                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" title="Insert headline 3" class="command" >h3</button>
+                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" title="Insert paragraph" class="command" >p</button>
+                    <button data-wysihtml5-command="insertSpeech" title="Insert speech" class="command"  style="display: none;"></button>
+                    <button data-behavior="showSource" title="Show HTML" class="action" >
+                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-embed2"></use></svg>
+                    </button>
+                </div>
+                <!-- Create link -->
+                <div class="create-link-dialog" ps-link-dialog data-wysihtml5-dialog="createLink" style="display: none;">
+                    <div class="toolbar-ext">
+                        <form class="form-inline">
+                            <div class="form-group" style="margin-right: 10px">
+                                <input type="text" class="form-control" data-wysihtml5-dialog-field="href" placeholder="Href" style="width: 300px">
+                                <button type="button" class="btn btn-link-select"><span class="glyphicon glyphicon-folder-open"></span></button>
                             </div>
-                            <h4 class="list-group-item-heading">{{image.name}}</h4>
-                            <div class="clearfix"></div>
-                        </a>
+                            <div class="form-group" style="margin-right: 10px">
+                                <label>Open in</label>
+                                <select data-wysihtml5-dialog-field="target" class="form-control" style="width: 100px">
+                                    <option value="" selected>Same window</option>
+                                    <option value="_blank">New window</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-default" data-wysihtml5-dialog-action="cancel">Cancel</button>
+                                <button type="button" class="btn btn-primary" data-wysihtml5-dialog-action="save">OK</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="lookup">
+                        <h3 class="panel-title">Select a page to link to:</h3>
+
+                        <div class="list-group">
+                            <a href="#" ng-repeat="page in availablePages" class="list-group-item" ng-click="selectPage(page)">
+                                <h4 class="list-group-item-heading">{{page.name}} <small>{{page.url}}</small></h4>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="panel-footer">
-                    <form class="form-inline">
-                        <div class="form-group" style="margin-right: 10px">
-                            <input type="text" ng-model="selectedImage.src" class="form-control" placeholder="Image url" style="width: 300px">
-                        </div>
-                        <div class="form-group" style="margin-right: 10px">
-                            <label>Width</label>
-                            <input type="number" ng-model="selectedImage.width" class="form-control" placeholder="Width" style="width: 100px">
-                        </div>
-                        <div class="form-group">
-                            <label>Height</label>
-                            <input type="number" ng-model="selectedImage.height" class="form-control" placeholder="Height" style="width: 100px">
-                        </div>
-                        <div class="form-group">
-                            <label>Align</label>
-                            <select ng-model="selectedImage.align" class="form-control" style="width: 100px">
-                                <option value="" selected>default</option>
-                                <option value="wysiwyg-float-left">left</option>
-                                <option value="wysiwyg-float-right">right</option>
-                                <option value="wysiwyg-align-top">top</option>
-                                <option value="wysiwyg-align-middle">middle</option>
-                                <option value="wysiwyg-align-bottom">bottom</option>
-                            </select>
-                        </div>
-                        <div class="pull-right">
-                            <button type="button" class="btn btn-default" ng-click="hideInsertImage()">Cancel</button>
-                            <button type="button" class="btn btn-primary" ng-disabled="selectedImage == null" ng-click="insertImage(selectedImage)">Insert</button>
-                        </div>
-                    </form>
 
+                <!-- Insert image --->
+                <div class="insert-image-dialog" ps-image-dialog data-wysihtml5-dialog="insertImage" style="display: none;">
+                    <div class="toolbar-ext">
+                        <form class="form-inline">
+                            <div class="form-group" style="margin-right: 10px">
+                                <input data-wysihtml5-dialog-field="src" placeholder="Url" class="form-control" value="" style="width: 300px">
+                                <button type="button" class="btn btn-img-select"><span class="glyphicon glyphicon-folder-open"></span></button>
+                            </div>
+                            <div class="form-group" style="margin-right: 10px">
+                                <input data-wysihtml5-dialog-field="width" class="form-control" placeholder="Width" value="" style="width: 63px">
+                            </div>
+                            <div class="form-group" style="margin-right: 10px">
+                                <input data-wysihtml5-dialog-field="height" class="form-control" placeholder="Height" value="" style="width: 63px">
+                            </div>
+                            <div class="form-group" style="display: none">
+                                <input data-wysihtml5-dialog-field="alt" class="form-control" placeholder="Alt text" value="">
+                            </div>
+                            <div class="form-group" style="margin-right: 10px">
+                                <select data-wysihtml5-dialog-field="className" class="form-control">
+                                    <option value="" selected>align default</option>
+                                    <option value="wysiwyg-float-left">align left</option>
+                                    <option value="wysiwyg-float-right">align right</option>
+                                    <option value="wysiwyg-align-top">align top</option>
+                                    <option value="wysiwyg-align-middle">align middle</option>
+                                    <option value="wysiwyg-align-bottom">align bottom</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-default" data-wysihtml5-dialog-action="cancel">Cancel</button>
+                                <button type="button" class="btn btn-primary" data-wysihtml5-dialog-action="save">OK</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="lookup">
+                        <h3 class="panel-title">Choose an image from the media library</h3>
+                        <div class="list-group">
+                            <a href="#" ng-repeat="image in availableImages" class="list-group-item" ng-click="selectImage(image)">
+                                <div class="image-holder">
+                                    <img ng-src="{{image.src}}">
+                                </div>
+                                <h4 class="list-group-item-heading">{{image.name}}</h4>
+                                <div class="clearfix"></div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div ps-link-dialog class="create-link modal" ng-show="createLinkDialog">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Select a page to link to</h3>
-                </div>
 
-                <div class="panel-body">
-                    <div class="list-group">
-                        <a href="#" ng-repeat="page in availablePages" class="list-group-item" ng-click="selectPage(page)">
-                            <h4 class="list-group-item-heading">{{page.name}} <small>{{page.url}}</small></h4>
-                        </a>
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <form class="form-inline">
-                        <div class="form-group" style="margin-right: 10px">
-                            <input type="text" ng-model="selectedPage.url" class="form-control" placeholder="Url" style="width: 300px">
-                        </div>
-                        <div class="form-group">
-                            <label>Open in</label>
-                            <select ng-model="selectedPage.linkTarget" class="form-control" style="width: 100px">
-                                <option value="">Same window</option>
-                                <option value="_blank">New window</option>
-                            </select>
-                        </div>
-                        <div class="pull-right">
-                            <button type="button" class="btn btn-default" ng-click="hideCreateLink()">Cancel</button>
-                            <button type="button" class="btn btn-primary" ng-disabled="selectedPage == null" ng-click="createLink(selectedPage)">Create</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
         <div class="editor webcopy" ng-bind-html="data.html"></div>
         <div class="source hidden">
             <textarea name="editor-source" rows="10"></textarea>
         </div>
     </div>
-    <footer class="footer">
-        <button type="button" class="btn btn-primary" ng-click="save()">Save and close</button>
-    </footer>
 </div>
 <script src="/_plugins/static/pagespace-webcopy/pagespace-stub.js"></script>
 <script src="/_plugins/static/pagespace-webcopy/bower_components/localforage/dist/localforage.min.js"></script>

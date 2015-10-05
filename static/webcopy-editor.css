@@ -15,30 +15,33 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 32px;
-    overflow: auto;
+    height: 82px;
+    overflow: hidden;
+    padding: 4px;
     background: #d3d3d3;
+    box-shadow: 0 4px 8px #929292;
+    z-index: 1;
+    transition: 0.5s height;
+}
+.toolbar.full {
+    height: 95%;
 }
 .editor,
 .source {
     position: absolute;
-    top: 32px;
+    top: 82px;
     left: 0;
     right: 0;
-    bottom: 60px;
-    overflow: auto;
-}
-.footer {
-    position: absolute;
     bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    overflow: hidden;
+    overflow: auto;
 }
 
 /* toolbar */
-.toolbar button,
+.toolbar-buttons {
+    width: 100%;
+    margin-bottom: 4px;
+}
+.toolbar-buttons button,
 .edit-actions button {
     min-width: 32px;
     height: 32px;
@@ -48,20 +51,30 @@ body {
     cursor: pointer;
     background: #d3d3d3;
 }
-.toolbar .wysihtml5-command-active {
+.toolbar-buttons button:hover {
+    background: #eeeeee;
+}
+.toolbar-buttons .wysihtml5-command-active {
     background: #fff;
 }
-.toolbar .icon {
+.toolbar-buttons .icon {
     width: 16px;
     height: 16px;
 }
-.wysihtml-editor .toolbar {
+.toolbar-ext {
+    margin-bottom: 19px;
+}
+.lookup {
+    position: absolute;
+    top: 90px;
+    bottom: 0;
+    overflow: auto;
+    width: 100%;
+}
 
-}
-.wysihtml-editor:hover .toolbar {
-    display: block;
-}
-.wysihtml-editor .toolbar-buttons {
+.wysihtml-editor .toolbar-buttons,
+.wysihtml-editor .insert-image-dialog,
+.wysihtml-editor .create-link-dialog {
     background: #d3d3d3;
 }
 .wysihtml-editor .editor[contenteditable="true"]:active,
@@ -84,22 +97,15 @@ body {
     font-family: Consolas, "courier new", monospace;
 }
 
-/* footer */
-.footer {
-    background: #d3d3d3;
-    padding: 15px 28px;
-}
-.footer button {
-    float: right;
-    cursor: pointer;
-}
-
 /* Copy formatting styles */
 .wysiwyg-text-align-left {
     text-align: left;
 }
 .wysiwyg-text-align-right {
     text-align: right;
+}
+.wysiwyg-text-align-center {
+    text-align: center;
 }
 .wysiwyg-text-align-justify {
     text-align: justify;
@@ -127,6 +133,7 @@ body {
 .create-link.modal {
     display: block;
     overflow: auto;
+    top: 100px;
 }
 .insert-image .image-holder {
     float: left;
@@ -151,7 +158,7 @@ body {
 .panel-body {
     position: absolute;
     top: 40px;
-    bottom: 60px;
+    bottom: 0;
     left: 0;
     right: 0;
     overflow: auto;
@@ -162,5 +169,5 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 0;
 }
