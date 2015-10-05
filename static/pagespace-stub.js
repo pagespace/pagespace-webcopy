@@ -1,5 +1,8 @@
 window.pagespace = window.pagespace || {
     _data: null,
+    getKey: function() {
+        return 'pagespacekey-123456';
+    },
     getData: function() {
         var self = this;
         console.info('Pagespace (stub) getting data');
