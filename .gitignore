@@ -33,7 +33,5 @@ media-uploads
 # ignored dependencies
 static/bower_components
 !static/bower_components/bootstrap/dist/css/bootstrap.min.css
-!static/bower_components/angular/angular.min.js
-!static/bower_components/angular-sanitize/angular-sanitize.min.js
 !static/bower_components/localforage/dist/localforage.min.js
 !static/bower_components/wysihtml/dist/wysihtml5x.min.js

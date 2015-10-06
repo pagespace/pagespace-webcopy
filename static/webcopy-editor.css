@@ -23,6 +23,9 @@ body {
     z-index: 1;
     transition: 0.5s height;
 }
+.toolbar a {
+    cursor: pointer;
+}
 .toolbar.full {
     height: 95%;
 }
@@ -135,7 +138,7 @@ body {
     overflow: auto;
     top: 100px;
 }
-.insert-image .image-holder {
+    .insert-image-dialog .image-holder {
     float: left;
     clear: left;
     width: 100px;
@@ -144,30 +147,7 @@ body {
     outline: 1px solid #ddd;
     margin-right: 5px;
 }
-.insert-image .image-holder img {
+.insert-image-dialog .image-holder img {
     max-width: 96px;
     max-height: 96px;
-}
-.panel-heading {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-}
-.panel-body {
-    position: absolute;
-    top: 40px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: auto;
-    background: #fff;
-}
-.panel-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 0;
 }

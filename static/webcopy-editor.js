@@ -1,161 +1,192 @@
-(function() {
+window.webcopyEditor = (function () {
 
-    var storageKey = null;
+    var storageKey = pagespace.getKey();
 
-    angular.module('webCopyApp', [ 'ngSanitize' ])
-    .directive('psWysihtml', function () {
+    var contentChanged = false;
+    var editor = null;
+    var data = null;
 
-        return {
-            restrict: 'A',
-            link: function (scope, element) {
+    function init() {
 
-                localforage.getItem(storageKey).then(function(cachedHtml) {
-                    pagespace.getData().then(function(data) {
-/*                        if(cachedHtml) {
-                            data.html = cachedHtml;
-                        }*/
-                        if(data.cssHref) {
-                            var injectLink = document.createElement('link');
-                            injectLink.setAttribute('type', 'text/css');
-                            injectLink.setAttribute('rel', 'stylesheet');
-                            injectLink.setAttribute('href', data.cssHref);
-                            var head = document.getElementsByTagName("head")[0];
-                            head.appendChild(injectLink);
-                        }
-                        console.log(data)
-                        scope.data = data;
-                        scope.$apply();
-                        setupEditor(data.html);
-                    });
-                });
-
-                function setupEditor(initHtml) {
-
-                    var rootEl = element[0];
-                    var editorEl = rootEl.querySelector('.editor');
-                    var sourceEl = rootEl.querySelector('.source');
-                    var toolbarEl = rootEl.querySelector('.toolbar');
-
-                    var openImageSelector = rootEl.querySelector('.btn-img-select');
-                    openImageSelector.addEventListener('click', function() {
-                        angular.element(toolbarEl).toggleClass('full');
-                    });
-                    var openLinkSelector = rootEl.querySelector('.btn-link-select');
-                    openLinkSelector.addEventListener('click', function() {
-                        angular.element(toolbarEl).toggleClass('full');
-                    });
-
-                    toolbarEl.querySelector('[data-wysihtml5-command="insertImage"]').addEventListener('click', function() {
-                        toolbarEl.querySelector('[data-wysihtml5-dialog="createLink"]').style.display = 'none';
-                    });
-                    toolbarEl.querySelector('[data-wysihtml5-command="createLink"]').addEventListener('click', function() {
-                        toolbarEl.querySelector('[data-wysihtml5-dialog="insertImage"]').style.display = 'none';
-                    });
-
-                    angular.element(sourceEl).addClass('hidden');
-
-                    var editor = new wysihtml5.Editor(editorEl, {
-                        toolbar: toolbarEl,
-                        showToolbarAfterInit: false,
-                        parserRules:  wysihtml5ParserRules,
-                        cleanUp: true,
-                        useLineBreaks:  false
-                    });
-
-                    editor.setValue(initHtml);
-                    //scope.webcopy = editor.getValue();
-
-                    rootEl.querySelector('[data-behavior=showSource]').addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var textarea = sourceEl.getElementsByTagName('textarea')[0];
-                        var html;
-                        if(angular.element(sourceEl).hasClass('hidden')) {
-                            //show textarea
-                            html = editor.getValue(false);
-                            angular.element(textarea).val(html);
-                        } else {
-                            // show editor
-                            html = angular.element(textarea).val();
-                            editor.setValue(html);
-                        }
-
-                        angular.element(editorEl).toggleClass('hidden');
-                        angular.element(sourceEl).toggleClass('hidden');
-                    });
-
-                    editor.on("focus", function() {
-                        angular.element(toolbarEl).removeClass('hidden');
-                    });
-                    /*            editor.on("blur", function() {
-                     angular.element(toolbarEl).addClass('hidden');
-                     });*/
-                    editor.on("interaction", function() {
-                        scope.webcopy = editor.getValue(false);
-                        scope.changed = true;
-                    });
-                    editor.on("aftercommand", function() {
-                        scope.changed = true;
-                    });
-                    editor.on("cancel:dialog", function() {
-                        angular.element(toolbarEl).removeClass('full');
-                    });
-                    editor.on("save:dialog", function() {
-                        angular.element(toolbarEl).removeClass('full');
-                    });
-
+        localforage.getItem(storageKey).then(function(cachedHtml) {
+            pagespace.getData().then(function(_data) {
+                if(cachedHtml) {
+                    _data.html = cachedHtml;
                 }
-            }
-        }
-    })
-    .directive('psImageDialog', function() {
-        return {
-            restrict: 'A',
-            controller: function($scope, $http) {
-                $http.get('/_api/media?type=' + encodeURIComponent('/^image/')).success(function(images) {
-                    images = images.map(function(image) {
-                        image.src = '/_media/' + image.fileName;
-                        return image;
-                    });
-                    $scope.availableImages = images;
-                });
+                data = _data;
 
-                $scope.selectImage = function(image) {
-                    console.log(image);
-                    document.querySelector('[data-wysihtml5-dialog-field="src"]').value = '/_media/' + image.fileName;
+                setUpEditor();
+                imageSelect();
+                linkSelect();
+                listenForChanges();
+            });
+        });
+    }
+
+    function setUpEditor() {
+
+        var rootEl = document.getElementById('webcopy-editor');
+        var editorEl = rootEl.querySelector('.editor');
+        var sourceEl = rootEl.querySelector('.source');
+        var toolbarEl = rootEl.querySelector('.toolbar');
+
+        var openImageSelector = rootEl.querySelector('.btn-img-select');
+        openImageSelector.addEventListener('click', function() {
+            toolbarEl.classList.toggle('full');
+        });
+        var openLinkSelector = rootEl.querySelector('.btn-link-select');
+        openLinkSelector.addEventListener('click', function() {
+            toolbarEl.classList.toggle('full');
+        });
+
+        toolbarEl.querySelector('[data-wysihtml5-command="insertImage"]').addEventListener('click', function() {
+            toolbarEl.querySelector('[data-wysihtml5-dialog="createLink"]').style.display = 'none';
+        });
+        toolbarEl.querySelector('[data-wysihtml5-command="createLink"]').addEventListener('click', function() {
+            toolbarEl.querySelector('[data-wysihtml5-dialog="insertImage"]').style.display = 'none';
+        });
+
+        sourceEl.classList.add('hidden');
+
+        editor = new wysihtml5.Editor(editorEl, {
+            toolbar: toolbarEl,
+            showToolbarAfterInit: false,
+            parserRules:  wysihtml5ParserRules,
+            cleanUp: true,
+            useLineBreaks:  false,
+            stylesheets: data.cssHref ?  [ data.cssHref ] : []
+        });
+
+        editor.setValue(data.html);
+
+        rootEl.querySelector('[data-behavior=showSource]').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var textarea = sourceEl.getElementsByTagName('textarea')[0];
+            var html;
+            if(sourceEl.classList.contains('hidden')) {
+                //show textarea
+                html = editor.getValue(false);
+                textarea.value = html;
+            } else {
+                // show editor
+                html = textarea.value;
+                editor.setValue(html);
+            }
+
+            editorEl.classList.toggle('hidden');
+            sourceEl.classList.toggle('hidden');
+        });
+
+        editor.on("focus", function() {
+            toolbarEl.classList.remove('hidden');
+        });
+        editor.on("interaction", function() {
+            contentChanged = true;
+        });
+        editor.on("aftercommand", function() {
+            contentChanged = true;
+        });
+        editor.on("cancel:dialog", function() {
+            toolbarEl.classList.remove('full');
+        });
+        editor.on("save:dialog", function() {
+            toolbarEl.classList.remove('full');
+        });
+
+        document.querySelector('[data-wysihtml5-dialog="createLink"] [data-wysihtml5-dialog-action="save"]').addEventListener('click', function() {
+            toolbarEl.classList.remove('full');
+        });
+        document.querySelector('[data-wysihtml5-dialog="insertImage"] [data-wysihtml5-dialog-action="save"]').addEventListener('click', function() {
+            toolbarEl.classList.remove('full');
+        });
+    }
+
+    function imageSelect() {
+
+        fetch('/_api/media?type=' + encodeURIComponent('/^image/'), {
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+            .then(checkStatus)
+            .then(parseJSON)
+            .then(function(images) {
+            images = images.map(function(image) {
+                image.src = '/_media/' + image.fileName;
+                return image;
+            });
+
+            var listGroup = document.createElement('a');
+            listGroup.classList.add('list-group');
+            images.map(function(image) {
+                var html =
+                    '<div class=image-holder>' +
+                    '<img src=' + image.src + '>' +
+                    '</div>' +
+                    '<h4 class=list-group-item-heading>' + image.name + '</h4>' +
+                    '<div class=clearfix></div>';
+                var listItem = document.createElement('a');
+                listItem.classList.add('list-group-item');
+                listItem.innerHTML = html;
+                listItem.addEventListener('click', function() {
+                    var src =  document.querySelector('[data-wysihtml5-dialog-field="src"]');
+                    src.focus();
+                    src.value = image.src;
                     document.querySelector('[data-wysihtml5-dialog-field="width"]').value = image.width;
                     document.querySelector('[data-wysihtml5-dialog-field="height"]').value = image.height;
                     document.querySelector('[data-wysihtml5-dialog-field="alt"]').value = image.name;
-                };
-            }
-        }
-    })
-    .directive('psLinkDialog', function() {
-        return {
-            restrict: 'A',
-            controller: function($scope, $http) {
-                $http.get('/_api/pages?status=' + encodeURIComponent('200')).success(function(pages) {
-                    $scope.availablePages = pages;
                 });
+                return listItem;
+            }).forEach(function(listItem) {
+                listGroup.appendChild(listItem);
+            });
 
-               $scope.selectPage = function(page) {
-                    document.querySelector('[data-wysihtml5-dialog-field="href"]').value = page.url;
-               };
+            document.getElementById('image-lookup').appendChild(listGroup);
+        });
+    }
+
+    function linkSelect() {
+
+        fetch('/_api/pages?status=200', {
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json'
             }
-        }
-    })
-    .controller('WebCopyController' , function($scope) {
+        })
+            .then(checkStatus)
+            .then(parseJSON)
+            .then(function(pages) {
+            var listGroup = document.createElement('a');
+            listGroup.classList.add('list-group');
+            pages.map(function(page) {
+                var html = '<h4 class=list-group-item-heading>' + page.name + '<small>' + page.url + '</small></h4>';
+                var listItem = document.createElement('a');
+                listItem.classList.add('list-group-item');
+                listItem.innerHTML = html;
+                listItem.addEventListener('click', function() {
+                    var input = document.querySelector('[data-wysihtml5-dialog-field="href"]');
+                    input.focus();
+                    input.value = page.url;
 
-        storageKey = pagespace.getKey();
+                });
+                return listItem;
+            }).forEach(function(listItem) {
+                listGroup.appendChild(listItem);
+            });
 
-        $scope.changed = false;
-        $scope.lastSaveTime = Date.now();
+            document.getElementById('page-lookup').appendChild(listGroup);
+        });
+    }
 
-        $scope.save = function() {
-            var htmlVal = $scope.webcopy;
+    function listenForChanges() {
+
+        function save() {
+            var htmlVal = editor.getValue();
             return pagespace.setData({
-                wrapperClass: $scope.data.wrapperClass || '',
-                cssHref: $scope.data.cssHref,
+                wrapperClass: data.wrapperClass || '',
+                cssHref: data.cssHref,
                 html: htmlVal
             }).then(function() {
                 //remove draft
@@ -163,22 +194,25 @@
             }).then(function() {
                 pagespace.close();
             });
-        };
+        }
 
-        $scope.saveDraft = function() {
-             var htmlVal = $scope.webcopy;
-             return localforage.setItem(storageKey, htmlVal);
-        };
+        document.getElementById('btnSave').addEventListener('click', function() {
+            save();
+        });
+
+        function saveDraft() {
+            var htmlVal = editor.getValue();
+            return localforage.setItem(storageKey, htmlVal);
+        }
 
         function saveOnChange() {
             setTimeout(function() {
-                if($scope.changed) {
-                    $scope.saveDraft().then(function() {
+                if(contentChanged) {
+                    saveDraft().then(function() {
                         console.info('Draft saved');
-                        $scope.lastSaveTime = Date.now();
-                        $scope.changed = false;
+                        ///$scope.lastSaveTime = Date.now();
+                        contentChanged = false;
                         saveOnChange();
-                        $scope.$apply();
                     }).catch(function(err) {
                          console.error(err, 'Error saving draft');
                     });
@@ -188,5 +222,21 @@
              }, 500);
         }
         saveOnChange();
-    });
+    }
+
+    function checkStatus(response) {
+        if (response.status >= 200 && response.status < 300) {
+            return response
+        } else {
+            var error = new Error(response.statusText)
+            error.response = response
+            throw error
+        }
+    }
+
+    function parseJSON(response) {
+        return response.json()
+    }
+
+    return init();
 })();
