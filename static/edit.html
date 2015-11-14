@@ -2,143 +2,143 @@
 <html>
 <head>
     <title>Web Copy Editor</title>
-    <link href="/_plugins/static/pagespace-webcopy/bower_components/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet">
-    <link href="/_plugins/static/pagespace-webcopy/webcopy-editor.css" type="text/css" rel="stylesheet">
+    <link href="/_static/plugins/pagespace-webcopy/bower_components/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="/_static/plugins/pagespace-webcopy/webcopy-editor.css" type="text/css" rel="stylesheet">
 </head>
 <body>
-<div id="webcopy-editor">
-    <div class="wysihtml-editor">
-        <div class="toolbar" class="hidden">
+<div id="webcopy-editor" class="wysihtml-editor">
 
-            <div class="pull-right">
-                <button type="button" class="btn btn-primary" id="btnSave">Save and close</button>
-            </div>
-            <!--<div class="pull-right" style="clear: right; margin-top: 10px"><p>Draft saved at {{lastSaveTime | date:'HH:mm:ss'}}</p></div>-->
+    <div class="toolbar" class="hidden">
 
-            <div>
-                <div class="toolbar-buttons">
-                    <button data-wysihtml5-command="undo" title="Undo" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-undo"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="redo" title="Redo" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-redo"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="bold" title="Make text bold (CTRL + B)" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-bold"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="italic" title="Make text italic (CTRL + I)" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-italic"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="insertUnorderedList" title="Insert an unordered list" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-list"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="insertOrderedList" title="Insert an ordered list" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-list-numbered"></use></svg>
-                    </button>
-                    <button title="Create a link" class="command" data-wysihtml5-command="createLink">
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-link"></use></svg>
-                    </button>
-                    <button title="Insert an image" class="command" data-wysihtml5-command="insertImage">
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="justifyLeft" title="Align left" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-left"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="justifyCenter" title="Align center" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-center"></use></svg>
-                    </button>
-                    <button data-wysihtml5-command="justifyRight" title="Align right" class="command" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-paragraph-right"></use></svg>
-                    </button>
-
-                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" title="Insert headline 1" class="command" >h1</button>
-                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" title="Insert headline 2" class="command" >h2</button>
-                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" title="Insert headline 3" class="command" >h3</button>
-                    <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" title="Insert paragraph" class="command" >p</button>
-                    <button data-wysihtml5-command="insertSpeech" title="Insert speech" class="command"  style="display: none;"></button>
-                    <button data-behavior="showSource" title="Show HTML" class="action" >
-                        <svg class="icon"><use xlink:href="/_plugins/static/pagespace-webcopy/toolbar.svg#icon-embed2"></use></svg>
-                    </button>
-                </div>
-                <!-- Create link -->
-                <div class="create-link-dialog" data-wysihtml5-dialog="createLink" style="display: none;">
-                    <div class="toolbar-ext">
-                        <form class="form-inline">
-                            <div class="form-group" style="margin-right: 10px">
-                                <input type="text" class="form-control" data-wysihtml5-dialog-field="href" placeholder="Href" style="width: 300px">
-                                <button type="button" class="btn btn-link-select"><span class="glyphicon glyphicon-folder-open"></span></button>
-                            </div>
-                            <div class="form-group" style="margin-right: 10px">
-                                <label>Open in</label>
-                                <select data-wysihtml5-dialog-field="target" class="form-control" style="width: 100px">
-                                    <option value="" selected>Same window</option>
-                                    <option value="_blank">New window</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <button type="button" class="btn btn-default" data-wysihtml5-dialog-action="cancel">Cancel</button>
-                                <button type="button" class="btn btn-primary" data-wysihtml5-dialog-action="save">OK</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class=lookup id=page-lookup>
-                        <h3 class="panel-title">Select a page to link to:</h3>
-                        <!-- List goes here -->
-                    </div>
-                </div>
-
-                <!-- Insert image --->
-                <div class="insert-image-dialog" data-wysihtml5-dialog="insertImage" style="display: none;">
-                    <div class="toolbar-ext">
-                        <form class="form-inline">
-                            <div class="form-group" style="margin-right: 10px">
-                                <input data-wysihtml5-dialog-field="src" placeholder="Url" class="form-control" value="" style="width: 300px">
-                                <button type="button" class="btn btn-img-select"><span class="glyphicon glyphicon-folder-open"></span></button>
-                            </div>
-                            <div class="form-group" style="margin-right: 10px">
-                                <input data-wysihtml5-dialog-field="width" class="form-control" placeholder="Width" value="" style="width: 63px">
-                            </div>
-                            <div class="form-group" style="margin-right: 10px">
-                                <input data-wysihtml5-dialog-field="height" class="form-control" placeholder="Height" value="" style="width: 63px">
-                            </div>
-                            <div class="form-group" style="display: none">
-                                <input data-wysihtml5-dialog-field="alt" class="form-control" placeholder="Alt text" value="">
-                            </div>
-                            <div class="form-group" style="margin-right: 10px">
-                                <select data-wysihtml5-dialog-field="className" class="form-control">
-                                    <option value="" selected>align default</option>
-                                    <option value="wysiwyg-float-left">align left</option>
-                                    <option value="wysiwyg-float-right">align right</option>
-                                    <option value="wysiwyg-align-top">align top</option>
-                                    <option value="wysiwyg-align-middle">align middle</option>
-                                    <option value="wysiwyg-align-bottom">align bottom</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <button type="button" class="btn btn-default" data-wysihtml5-dialog-action="cancel">Cancel</button>
-                                <button type="button" class="btn btn-primary" data-wysihtml5-dialog-action="save">OK</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class=lookup id=image-lookup>
-                        <h3 class="panel-title">Choose an image from the media library</h3>
-                        <!-- List goes here -->
-                    </div>
-                </div>
-            </div>
+        <div class="pull-right">
+            <button type="button" class="btn btn-primary" id="btnSave">Save and close</button>
         </div>
+        <!--<div class="pull-right" style="clear: right; margin-top: 10px"><p>Draft saved at {{lastSaveTime | date:'HH:mm:ss'}}</p></div>-->
 
-        <div class="editor webcopy" ng-bind-html="data.html"></div>
-        <div class="source hidden">
-            <textarea name="editor-source" rows="10"></textarea>
+        <div>
+            <div class="toolbar-buttons">
+                <button data-wysihtml5-command="undo" title="Undo" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-undo"></use></svg>
+                </button>
+                <button data-wysihtml5-command="redo" title="Redo" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-redo"></use></svg>
+                </button>
+                <button data-wysihtml5-command="bold" title="Make text bold (CTRL + B)" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-bold"></use></svg>
+                </button>
+                <button data-wysihtml5-command="italic" title="Make text italic (CTRL + I)" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-italic"></use></svg>
+                </button>
+                <button data-wysihtml5-command="insertUnorderedList" title="Insert an unordered list" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-list"></use></svg>
+                </button>
+                <button data-wysihtml5-command="insertOrderedList" title="Insert an ordered list" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-list-numbered"></use></svg>
+                </button>
+                <button title="Create a link" class="command" data-wysihtml5-command="createLink">
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-link"></use></svg>
+                </button>
+                <button title="Insert an image" class="command" data-wysihtml5-command="insertImage">
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
+                </button>
+                <button data-wysihtml5-command="justifyLeft" title="Align left" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-paragraph-left"></use></svg>
+                </button>
+                <button data-wysihtml5-command="justifyCenter" title="Align center" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-paragraph-center"></use></svg>
+                </button>
+                <button data-wysihtml5-command="justifyRight" title="Align right" class="command" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-paragraph-right"></use></svg>
+                </button>
+
+                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" title="Insert headline 1" class="command" >h1</button>
+                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" title="Insert headline 2" class="command" >h2</button>
+                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" title="Insert headline 3" class="command" >h3</button>
+                <button data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="p" title="Insert paragraph" class="command" >p</button>
+                <button data-wysihtml5-command="insertSpeech" title="Insert speech" class="command"  style="display: none;"></button>
+                <button data-behavior="showSource" title="Show HTML" class="action" >
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-embed2"></use></svg>
+                </button>
+            </div>
+            <!-- Create link -->
+            <div class="create-link-dialog" data-wysihtml5-dialog="createLink" style="display: none;">
+                <div class="toolbar-ext">
+                    <form class="form-inline">
+                        <div class="form-group" style="margin-right: 10px">
+                            <input type="text" class="form-control" data-wysihtml5-dialog-field="href" placeholder="Href" style="width: 300px">
+                            <button type="button" class="btn btn-link-select"><span class="glyphicon glyphicon-folder-open"></span></button>
+                        </div>
+                        <div class="form-group" style="margin-right: 10px">
+                            <label>Open in</label>
+                            <select data-wysihtml5-dialog-field="target" class="form-control" style="width: 100px">
+                                <option value="" selected>Same window</option>
+                                <option value="_blank">New window</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" data-wysihtml5-dialog-action="cancel">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-wysihtml5-dialog-action="save">OK</button>
+                        </div>
+                    </form>
+                </div>
+                <div class=lookup id=page-lookup>
+                    <h3 class="panel-title">Select a page to link to:</h3>
+                    <!-- List goes here -->
+                </div>
+            </div>
+
+            <!-- Insert image --->
+            <div class="insert-image-dialog" data-wysihtml5-dialog="insertImage" style="display: none;">
+                <div class="toolbar-ext">
+                    <form class="form-inline">
+                        <div class="form-group" style="margin-right: 10px">
+                            <input data-wysihtml5-dialog-field="src" placeholder="Url" class="form-control" value="" style="width: 300px">
+                            <button type="button" class="btn btn-img-select"><span class="glyphicon glyphicon-folder-open"></span></button>
+                        </div>
+                        <div class="form-group" style="margin-right: 10px">
+                            <input data-wysihtml5-dialog-field="width" class="form-control" placeholder="Width" value="" style="width: 63px">
+                        </div>
+                        <div class="form-group" style="margin-right: 10px">
+                            <input data-wysihtml5-dialog-field="height" class="form-control" placeholder="Height" value="" style="width: 63px">
+                        </div>
+                        <div class="form-group" style="display: none">
+                            <input data-wysihtml5-dialog-field="alt" class="form-control" placeholder="Alt text" value="">
+                        </div>
+                        <div class="form-group" style="margin-right: 10px">
+                            <select data-wysihtml5-dialog-field="className" class="form-control">
+                                <option value="" selected>align default</option>
+                                <option value="wysiwyg-float-left">align left</option>
+                                <option value="wysiwyg-float-right">align right</option>
+                                <option value="wysiwyg-align-top">align top</option>
+                                <option value="wysiwyg-align-middle">align middle</option>
+                                <option value="wysiwyg-align-bottom">align bottom</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" data-wysihtml5-dialog-action="cancel">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-wysihtml5-dialog-action="save">OK</button>
+                        </div>
+                    </form>
+                </div>
+                <div class=lookup id=image-lookup>
+                    <h3 class="panel-title">Choose an image from the media library</h3>
+                    <!-- List goes here -->
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="editor webcopy" ng-bind-html="data.html"></div>
+    <div class="source hidden">
+        <textarea name="editor-source" rows="10"></textarea>
+    </div>
 </div>
-<script src="/_plugins/static/pagespace-webcopy/pagespace-stub.js"></script>
-<script src="/_plugins/static/pagespace-webcopy/bower_components/localforage/dist/localforage.min.js"></script>
-<script src="/_plugins/static/pagespace-webcopy/bower_components/wysihtml/dist/wysihtml5x-toolbar.js"></script>
-<script src="/_plugins/static/pagespace-webcopy/parser-rules.js"></script>
-<script src="/_plugins/static/pagespace-webcopy/webcopy-editor.js"></script>
+
+<script src="/_static/plugins/pagespace-webcopy/pagespace-stub.js"></script>
+<script src="/_static/plugins/pagespace-webcopy/bower_components/localforage/dist/localforage.min.js"></script>
+<script src="/_static/plugins/pagespace-webcopy/bower_components/wysihtml/dist/wysihtml5x-toolbar.js"></script>
+<script src="/_static/plugins/pagespace-webcopy/parser-rules.js"></script>
+<script src="/_static/plugins/pagespace-webcopy/webcopy-editor.js"></script>
 
 </body>
 

@@ -21,7 +21,7 @@
   },
   "pagespace" : {
      "name" : "Web Copy",
-     "defaultData": {
+     "config": {
         "html": "<p>New web copy</p>",
         "wrapperClass":  "webcopy",
         "cssHref": ""

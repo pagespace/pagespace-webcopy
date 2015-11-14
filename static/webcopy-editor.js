@@ -114,7 +114,7 @@ window.webcopyEditor = (function () {
             .then(parseJSON)
             .then(function(images) {
             images = images.map(function(image) {
-                image.src = '/_media/' + image.fileName;
+                image.src = '/_media/' + image.fileName + '?label=thumb';
                 return image;
             });
 
@@ -131,9 +131,11 @@ window.webcopyEditor = (function () {
                 listItem.classList.add('list-group-item');
                 listItem.innerHTML = html;
                 listItem.addEventListener('click', function() {
-                    var src =  document.querySelector('[data-wysihtml5-dialog-field="src"]');
-                    src.focus();
-                    src.value = image.src;
+
+                    var src = image.src.replace('label=thumb', 'label=default')
+                    var srcEl =  document.querySelector('[data-wysihtml5-dialog-field="src"]');
+                    srcEl.focus();
+                    srcEl.value = src;
                     document.querySelector('[data-wysihtml5-dialog-field="width"]').value = image.width;
                     document.querySelector('[data-wysihtml5-dialog-field="height"]').value = image.height;
                     document.querySelector('[data-wysihtml5-dialog-field="alt"]').value = image.name;
