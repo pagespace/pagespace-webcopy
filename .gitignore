@@ -34,4 +34,4 @@ media-uploads
 static/bower_components
 !static/bower_components/bootstrap/dist/css/bootstrap.min.css
 !static/bower_components/localforage/dist/localforage.min.js
-!static/bower_components/wysihtml/dist/wysihtml5x.min.js
+!static/bower_components/wysihtml/dist/wysihtml5x-toolbar.js
