@@ -14,7 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "wysihtml": "~0.4.17",
+    "wysihtml": "~0.5.2",
     "localforage": "~1.2.10",
     "bootstrap": "~3.3.5"
   }
