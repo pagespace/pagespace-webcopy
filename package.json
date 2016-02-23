@@ -1,6 +1,6 @@
 {
   "name": "pagespace-webcopy",
-  "version": "1.0.2",
+  "version": "0.1.0",
   "description": "Web copy plugin for Pagespace",
   "repository": {
     "type": "git",
@@ -21,16 +21,21 @@
   },
   "keywords" : [ "pagespace-plugin" ],
   "pagespace" : {
-     "schema" : [{
-        "name" : "html",
-        "title" : "Web copy",
-        "default" : "<p>New web copy</p>",
-        "type": "string"
-     }, {
-         "name" : "wrapperClass",
-         "title" : "CSS Class",
-         "default" : "webcopy",
-         "type" : "string"
-     }]
+     "schema" : {
+         "type" : "object",
+         "title" : "Web copy",
+         "properties" : {
+             "html" : {
+                 "title" : "Web copy",
+                 "default" : "<p>New web copy</p>",
+                 "type": "string"
+             },
+             "wrapperClass" : {
+                 "title" : "CSS Class",
+                 "default" : "webcopy",
+                 "type" : "string"
+             }
+         }
+     }
   }
 }
