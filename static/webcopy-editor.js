@@ -193,13 +193,13 @@ window.webcopyEditor = (function () {
             }).then(function() {
                 //remove draft
                 return localforage.removeItem(storageKey);
-            }).then(function() {
-                pagespace.close();
             });
         }
 
-        document.getElementById('btnSave').addEventListener('click', function() {
-            save();
+        pagespace.on('save', function () {
+            save().then(function() {
+                pagespace.close();
+            });
         });
 
         function saveDraft() {
