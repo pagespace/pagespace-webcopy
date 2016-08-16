@@ -11,12 +11,6 @@ body {
 /* layout */
 
 .toolbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 82px;
-    overflow: hidden;
     padding: 4px;
     background: #d3d3d3;
     box-shadow: 0 4px 8px #929292;
@@ -31,11 +25,7 @@ body {
 }
 .editor,
 .source {
-    position: absolute;
-    top: 82px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    max-height: 6000px;
     overflow: auto;
 }
 .editor {
@@ -72,12 +62,11 @@ body {
 .toolbar-ext {
     margin-bottom: 19px;
 }
-.lookup {
-    position: absolute;
-    top: 90px;
-    bottom: 0;
-    overflow: auto;
-    width: 100%;
+.form-inline > .form-group,
+.form-inline > .form-group > .form-control,
+.form-inline > .form-group > .btn,
+.form-inline > .form-group > label {
+    display: inline-block;
 }
 
 .wysihtml-editor .toolbar-buttons,
@@ -141,18 +130,17 @@ body {
 .create-link.modal {
     display: block;
     overflow: auto;
-    top: 100px;
 }
-    .insert-image-dialog .image-holder {
+.insert-image-dialog .image-holder {
     float: left;
     clear: left;
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     padding: 2px;
     outline: 1px solid #ddd;
     margin-right: 5px;
 }
 .insert-image-dialog .image-holder img {
-    max-width: 96px;
-    max-height: 96px;
+    max-width: 76px;
+    max-height: 76px;
 }

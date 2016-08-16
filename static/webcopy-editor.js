@@ -30,15 +30,6 @@ window.webcopyEditor = (function () {
         var sourceEl = rootEl.querySelector('.source');
         var toolbarEl = rootEl.querySelector('.toolbar');
 
-        var openImageSelector = rootEl.querySelector('.btn-img-select');
-        openImageSelector.addEventListener('click', function() {
-            toolbarEl.classList.toggle('full');
-        });
-        var openLinkSelector = rootEl.querySelector('.btn-link-select');
-        openLinkSelector.addEventListener('click', function() {
-            toolbarEl.classList.toggle('full');
-        });
-
         toolbarEl.querySelector('[data-wysihtml5-command="insertImage"]').addEventListener('click', function() {
             toolbarEl.querySelector('[data-wysihtml5-dialog="createLink"]').style.display = 'none';
         });
