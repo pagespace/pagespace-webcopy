@@ -11,6 +11,8 @@ body {
 /* layout */
 
 .toolbar {
+    position: fixed;
+    width: 100%;
     padding: 4px;
     background: #d3d3d3;
     box-shadow: 0 4px 8px #929292;
@@ -25,6 +27,8 @@ body {
 }
 .editor,
 .source {
+    position: relative;
+    top: 50px;
     max-height: 6000px;
     overflow: auto;
 }
@@ -59,8 +63,14 @@ body {
     width: 16px;
     height: 16px;
 }
-.toolbar-ext {
-    margin-bottom: 19px;
+.toolbar-ext .form-group {
+    margin-bottom: 0;
+}
+.lookup {
+    display: none;
+}
+.lookup h3 {
+    margin: 1em 0 1em 0;
 }
 .form-inline > .form-group,
 .form-inline > .form-group > .form-control,
@@ -90,7 +100,7 @@ body {
 }
 .wysihtml-editor .source textarea {
     width: 100%;
-    font-size: 12px;
+    font-size: 14px;
     font-family: Consolas, "courier new", monospace;
 }
 

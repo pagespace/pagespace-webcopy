@@ -33,6 +33,9 @@
                 <button title="Create a link" class="command" data-wysihtml5-command="createLink">
                     <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-link"></use></svg>
                 </button>
+                <button title="Remove link" id="remove-link">
+                    <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-unlink"></use></svg>
+                </button>
                 <button title="Insert an image" class="command" data-wysihtml5-command="insertImage">
                     <svg class="icon"><use xlink:href="/_static/plugins/pagespace-webcopy/toolbar.svg#icon-image"></use></svg>
                 </button>
@@ -60,10 +63,18 @@
                 <div class="toolbar-ext">
                     <form class="form-inline" autocomplete="off">
                         <div class="form-group" style="margin-right: 10px">
-                            <input type="text" class="form-control" data-wysihtml5-dialog-field="href" placeholder="Href" style="width: 300px"></div>
+                            <div class="input-group" style="display: inline-block">
+                                <input type="text" class="form-control" data-wysihtml5-dialog-field="href" placeholder="Href" style="width: 300px">
+                                <span class="input-group-btn" style="display: inline">
+                                    <button type="button" class="btn btn-link-select" id="open-page-select">
+                                        <span class="glyphicon glyphicon-folder-open"></span>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
                         <div class="form-group" style="margin-right: 10px">
-                            <select data-wysihtml5-dialog-field="target" class="form-control" style="width: 100px">
-                                <option selected disabled>Open in...</option>
+                            <select data-wysihtml5-dialog-field="target" class="form-control" value="" style="width: 100px">
+                                <option value="" selected disabled>open in</option>
                                 <option value="">Same window</option>
                                 <option value="_blank">New window</option>
                             </select>
@@ -85,20 +96,27 @@
                 <div class="toolbar-ext">
                     <form class="form-inline" >
                         <div class="form-group" style="margin-right: 10px">
-                            <input data-wysihtml5-dialog-field="src" placeholder="Url" class="form-control" value="" style="width: 300px"></div>
-                        <div class="form-group" style="margin-right: 10px">
-                            <input data-wysihtml5-dialog-field="width" class="form-control" placeholder="Width" value="" style="width: 63px">
+                            <div class="input-group" style="display: inline-block">
+                                <input data-wysihtml5-dialog-field="src" placeholder="Url" class="form-control" value="" style="width: 300px">
+                                <span class="input-group-btn" style="display: inline">
+                                    <button type="button" class="btn btn-image-select" id="open-image-select">
+                                        <span class="glyphicon glyphicon-folder-open"></span>
+                                    </button>
+                                </span>
+                            </div>
                         </div>
                         <div class="form-group" style="margin-right: 10px">
-                            <input data-wysihtml5-dialog-field="height" class="form-control" placeholder="Height" value="" style="width: 63px">
+                            <input data-wysihtml5-dialog-field="width" class="form-control" placeholder="W" value="" style="width: 63px">
+                        </div>
+                        <div class="form-group" style="margin-right: 10px">
+                            <input data-wysihtml5-dialog-field="height" class="form-control" placeholder="H" value="" style="width: 63px">
                         </div>
                         <div class="form-group" style="display: none">
                             <input data-wysihtml5-dialog-field="alt" class="form-control" placeholder="Alt text" value="">
                         </div>
                         <div class="form-group" style="margin-right: 10px">
                             <select data-wysihtml5-dialog-field="className" class="form-control">
-                                <option selected disabled>Align...</option>
-                                <option value="">align default</option>
+                                <option value="" selected>align default</option>
                                 <option value="wysiwyg-float-left">align left</option>
                                 <option value="wysiwyg-float-right">align right</option>
                                 <option value="wysiwyg-align-top">align top</option>

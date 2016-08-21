@@ -84,6 +84,14 @@ window.webcopyEditor = (function () {
         editor.on("save:dialog", function() {
             toolbarEl.classList.remove('full');
         });
+        editor.on("show:dialog", function() {
+            document.getElementById('image-lookup').style.display = 'none';
+            document.getElementById('page-lookup').style.display = 'none';
+        });
+
+        document.getElementById('remove-link').addEventListener('click', function () {
+            editor.composer.commands.exec("removeLink");
+        });
 
         document.querySelector('[data-wysihtml5-dialog="createLink"] [data-wysihtml5-dialog-action="save"]').addEventListener('click', function() {
             toolbarEl.classList.remove('full');
@@ -91,86 +99,107 @@ window.webcopyEditor = (function () {
         document.querySelector('[data-wysihtml5-dialog="insertImage"] [data-wysihtml5-dialog-action="save"]').addEventListener('click', function() {
             toolbarEl.classList.remove('full');
         });
+
+        //workaround to make selects work properly in wysihtml
+        var selects = document.querySelectorAll('select');
+        for(var i = 0; i < selects.length; i++) {
+            selects[i].defaultValue =  selects[i].querySelector('option[selected]').value || '';
+        }
     }
 
     function imageSelect() {
 
-        fetch('/_api/media?type=' + encodeURIComponent('/^image/'), {
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-            .then(checkStatus)
-            .then(parseJSON)
-            .then(function(images) {
-            images = images.map(function(image) {
-                image.src = '/_media/' + image.fileName + '?label=thumb';
-                return image;
-            });
+        var imageLookup = document.getElementById('image-lookup');
+        document.getElementById('open-image-select').addEventListener('click', function() {
+            toggleLookup(imageLookup, function() {
+                fetch('/_api/media?type=' + encodeURIComponent('/^image/'), {
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(checkStatus).then(parseJSON).then(function(images) {
+                    images = images.map(function(image) {
+                        image.src = '/_media/' + image.fileName + '?label=thumb';
+                        return image;
+                    });
 
-            var listGroup = document.createElement('a');
-            listGroup.classList.add('list-group');
-            images.map(function(image) {
-                var html =
-                    '<div class=image-holder>' +
-                    '<img src=' + image.src + '>' +
-                    '</div>' +
-                    '<h4 class=list-group-item-heading>' + image.name + '</h4>' +
-                    '<div class=clearfix></div>';
-                var listItem = document.createElement('a');
-                listItem.classList.add('list-group-item');
-                listItem.innerHTML = html;
-                listItem.addEventListener('click', function() {
+                    var listGroup = document.createElement('a');
+                    listGroup.classList.add('list-group');
+                    images.map(function(image) {
+                        var html =
+                            '<div class=image-holder>' +
+                            '<img src=' + image.src + '>' +
+                            '</div>' +
+                            '<h4 class=list-group-item-heading>' + image.name + '</h4>' +
+                            '<div class=clearfix></div>';
+                        var listItem = document.createElement('a');
+                        listItem.classList.add('list-group-item');
+                        listItem.innerHTML = html;
+                        listItem.addEventListener('click', function() {
 
-                    var src = image.src.replace('label=thumb', 'label=default')
-                    var srcEl =  document.querySelector('[data-wysihtml5-dialog-field="src"]');
-                    srcEl.focus();
-                    srcEl.value = src;
-                    document.querySelector('[data-wysihtml5-dialog-field="width"]').value = image.width;
-                    document.querySelector('[data-wysihtml5-dialog-field="height"]').value = image.height;
-                    document.querySelector('[data-wysihtml5-dialog-field="alt"]').value = image.name;
+                            var src = image.src.replace('label=thumb', 'label=default')
+                            var srcEl =  document.querySelector('[data-wysihtml5-dialog-field="src"]');
+                            srcEl.focus();
+                            srcEl.value = src;
+                            document.querySelector('[data-wysihtml5-dialog-field="width"]').value = image.width;
+                            document.querySelector('[data-wysihtml5-dialog-field="height"]').value = image.height;
+                            document.querySelector('[data-wysihtml5-dialog-field="alt"]').value = image.name;
+                        });
+                        return listItem;
+                    }).forEach(function(listItem) {
+                        listGroup.appendChild(listItem);
+                    });
+
+                    imageLookup.appendChild(listGroup);
                 });
-                return listItem;
-            }).forEach(function(listItem) {
-                listGroup.appendChild(listItem);
             });
-
-            document.getElementById('image-lookup').appendChild(listGroup);
         });
     }
 
     function linkSelect() {
+        var pageLookup = document.getElementById('page-lookup');
+        document.getElementById('open-page-select').addEventListener('click', function() {
+            toggleLookup(pageLookup, function () {
+                fetch('/_api/pages?status=200', {
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).then(checkStatus).then(parseJSON).then(function(pages) {
+                    var listGroup = document.createElement('a');
+                    listGroup.classList.add('list-group');
+                    pages.map(function (page) {
+                        var html = '<h4 class=list-group-item-heading>' + page.name + '<small>' + page.url + '</small></h4>';
+                        var listItem = document.createElement('a');
+                        listItem.classList.add('list-group-item');
+                        listItem.innerHTML = html;
+                        listItem.addEventListener('click', function () {
+                            var input = document.querySelector('[data-wysihtml5-dialog-field="href"]');
+                            input.focus();
+                            input.value = page.url;
 
-        fetch('/_api/pages?status=200', {
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json'
-            }
-        })
-            .then(checkStatus)
-            .then(parseJSON)
-            .then(function(pages) {
-            var listGroup = document.createElement('a');
-            listGroup.classList.add('list-group');
-            pages.map(function(page) {
-                var html = '<h4 class=list-group-item-heading>' + page.name + '<small>' + page.url + '</small></h4>';
-                var listItem = document.createElement('a');
-                listItem.classList.add('list-group-item');
-                listItem.innerHTML = html;
-                listItem.addEventListener('click', function() {
-                    var input = document.querySelector('[data-wysihtml5-dialog-field="href"]');
-                    input.focus();
-                    input.value = page.url;
+                        });
+                        return listItem;
+                    }).forEach(function (listItem) {
+                        listGroup.appendChild(listItem);
+                    });
 
+                    pageLookup.appendChild(listGroup);
                 });
-                return listItem;
-            }).forEach(function(listItem) {
-                listGroup.appendChild(listItem);
             });
-
-            document.getElementById('page-lookup').appendChild(listGroup);
         });
+    };
+
+    function toggleLookup(lookupEl, populateFn) {
+        if(!lookupEl.hasAttribute('data-populated')) {
+            populateFn();
+            lookupEl.setAttribute('data-populated', '');
+        }
+        if(lookupEl.style.display === 'block') {
+            lookupEl.style.display = 'none';
+        } else {
+            lookupEl.style.display = 'block';
+        }
     }
 
     function listenForChanges() {
