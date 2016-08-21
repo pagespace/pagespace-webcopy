@@ -33,5 +33,6 @@ media-uploads
 # ignored dependencies
 static/bower_components
 !static/bower_components/bootstrap/dist/css/bootstrap.min.css
+!static/bower_components/bootstrap/dist/fonts/*
 !static/bower_components/localforage/dist/localforage.min.js
 !static/bower_components/wysihtml/dist/wysihtml-toolbar.js
