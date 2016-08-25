@@ -81,16 +81,16 @@ window.webcopyEditor = (function () {
         editor.on("cancel:dialog", function() {
             toolbarEl.classList.remove('full');
         });
-        editor.on("save:dialog", function() {
+        editor.on("save:dialog", function(ev) {
+            if(ev.command === 'createLink' &&
+                ev.dialogContainer.querySelector('input[data-wysihtml5-dialog-field="href"]').value === '') {
+                editor.composer.commands.exec("removeLink");
+            }
             toolbarEl.classList.remove('full');
         });
         editor.on("show:dialog", function() {
             document.getElementById('image-lookup').style.display = 'none';
             document.getElementById('page-lookup').style.display = 'none';
-        });
-
-        document.getElementById('remove-link').addEventListener('click', function () {
-            editor.composer.commands.exec("removeLink");
         });
 
         document.querySelector('[data-wysihtml5-dialog="createLink"] [data-wysihtml5-dialog-action="save"]').addEventListener('click', function() {

@@ -13,6 +13,8 @@ body {
 .toolbar {
     position: fixed;
     width: 100%;
+    overflow: scroll;
+    max-height: 100%;
     padding: 4px;
     background: #d3d3d3;
     box-shadow: 0 4px 8px #929292;
